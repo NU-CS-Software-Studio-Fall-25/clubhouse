@@ -2,7 +2,7 @@
 An app to allow users to find and create clubs.
 
 ## Members
-Alex Shen, Theo Maurino, Eiko Reisz, Neo Trovela-Villamiel
+Alex Shen, Theo Maurino, Neo Trovela-Villamiel
 
 ### MVP
  - A front-end website where clubs post information such as meeting time, location, description, and a link to a chat group / space.
