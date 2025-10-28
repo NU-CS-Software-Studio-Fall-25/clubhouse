@@ -1,33 +1,65 @@
-<div class=" p-4 mb-4">
-  <h1 class="mb-3 " style="font-size: 4rem;"><%= @club.name %></h1>
-  <p class="text-muted" style="font-size: 1.5rem"><%= @club.description %></p>
-</div>
-
-<h2 class="mb-3">Upcoming Events</h2>
-
-<% if @events.any? %>
-  <div class="list-group mb-4">
-    <% @events.each do |event| %>
-      <div class="list-group-item list-group-item-action my-2">
-        <h5 class="mb-1"><%= event.name %></h5>
-        <small class="text-secondary">
-          <%= event.date.strftime("%B %d, %Y at %I:%M %p") if event.date %><br>
-
-          <%= "Location: #{event.location}" if event.location.present? %>
-          
-        </small>
+<div class="container mt-4">
+  <div class="position-relative mb-5">
+    <% if current_user&.owns?(@club) %>
+      <div class="position-absolute top-0 end-0 flex flex-column gap-2">
+        <%= link_to edit_club_path(@club), class: "btn btn-outline-warning me-2" do %>
+          <i class="bi bi-pencil-square"></i> Edit Club
+        <% end %>
+        <%= button_to @club, method: :delete, 
+            data: { confirm: "Are you sure you want to delete this club and all of its events?" }, 
+            class: "btn btn-outline-danger d-inline-block" do %>
+          <i class="bi bi-trash"></i> Delete Club
+        <% end %>
       </div>
     <% end %>
+    
+    <h1 class="display-4 mb-3 border-bottom pb-2 fw-bold">
+      <%= @club.name %>
+    </h1>
+    <p class="lead text-muted"><%= @club.description %></p>
   </div>
-<% else %>
-  <p class="text-muted">No upcoming events.</p>
-<% end %>
 
-<div class="d-flex flex-column">
-    <div class="d-flex">
-        <%= link_to "Add New Event", new_event_path(club_id: @club.id), class: "btn btn-primary" %>
-        <%= link_to "Back to All Clubs", clubs_path, class: "btn btn-secondary ms-2" %>
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+      <h2 class="h3 mb-0 d-flex align-items-center">
+        <i class="bi bi-calendar-event me-2"></i>
+        Upcoming Events
+      </h2>
     </div>
+    <div class="card-body">
+      <% if @events.any? %>
+        <div class="list-group list-group-flush">
+          <% @events.each do |event| %>
+            <div class="list-group-item list-group-item-action py-3 border-start-0 border-end-0">
+              <h5 class="mb-1 fw-bold"><%= event.name %></h5>
+              <p class="mb-1 text-secondary">
+                <i class="bi bi-clock me-1"></i>
+                <%= event.date.strftime("%B %d, %Y at %I:%M %p") if event.date %>
+              </p>
+              <% if event.location.present? %>
+                <p class="mb-0 text-secondary">
+                  <i class="bi bi-geo-alt me-1"></i>
+                  <%= event.location %>
+                </p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-muted mb-0">
+          <i class="bi bi-calendar-x me-2"></i>
+          No upcoming events scheduled.
+        </p>
+      <% end %>
+    </div>
+  </div>
 
-    <%= button_to "Destroy this Club", @club, method: :delete, data: { confirm: "Are you sure you want to delete this club and all of its events?" }, class: "btn btn-danger mt-4 w-25 " %>
+  <div class="d-flex gap-2">
+    <%= link_to new_event_path(club_id: @club.id), class: "btn btn-primary" do %>
+      <i class="bi bi-plus-circle me-1"></i> Add New Event
+    <% end %>
+    <%= link_to clubs_path, class: "btn btn-outline-secondary" do %>
+      <i class="bi bi-arrow-left me-1"></i> Back to All Clubs
+    <% end %>
+  </div>
 </div>

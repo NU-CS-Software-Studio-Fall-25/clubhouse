@@ -3,7 +3,7 @@ class AuthController < ApplicationController
 
   def new
     client_id = ENV.fetch("GOOGLE_CLIENT_ID")
-    redirect_uri = 'http://localhost:3000/auth/google_oauth2/callback'
+    redirect_uri = Rails.env.production? ? "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" : 'http://localhost:3000/auth/google_oauth2/callback'
     scope = 'openid email profile'
     state = SecureRandom.hex(16)
     
@@ -31,7 +31,7 @@ class AuthController < ApplicationController
           client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
           code: code,
           grant_type: 'authorization_code',
-          redirect_uri: 'http://localhost:3000/auth/google_oauth2/callback'
+          redirect_uri: Rails.env.production? ? "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" : 'http://localhost:3000/auth/google_oauth2/callback'
         }
       })
       
@@ -45,14 +45,22 @@ class AuthController < ApplicationController
         
         if user_response.success?
           user_data = user_response.parsed_response
-          user = User.find_or_create_by(google_id: user_data['id']) do |u|
-            u.name = user_data['name']
-            u.email = user_data['email']
-            u.avatar_url = user_data['picture']
+
+          begin
+            user = User.from_google!(user_data)
+            session[:user_id] = user.id
+            redirect_to root_path, notice: 'Successfully signed in!'
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error("User save failed: #{e.record.errors.full_messages.join(', ')}")
+            redirect_to root_path, alert: "Could not create your account (#{e.record.errors.full_messages.to_sentence})."
+
+        #   user = User.find_or_create_by(google_id: user_data['id']) do |u|
+        #     u.name = user_data['name']
+        #     u.email = user_data['email']
+        #     u.avatar_url = user_data['picture']
           end
           
-          session[:user_id] = user.id
-          redirect_to root_path, notice: 'Successfully signed in!'
+          
         else
           redirect_to root_path, alert: 'Failed to get user information!'
         end

@@ -1,23 +1,31 @@
-<%= form_with(model: event) do |form| %>
-    <%= form.hidden_field :club_id, value: event.club_id || params[:club_id] %>
-  
-    <div>
-      <%= form.label :name %>
-      <%= form.text_field :name %>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <%= form_with(model: event, class: "card shadow-sm") do |form| %>
+        <div class="card-body">
+          <%= form.hidden_field :club_id, value: event.club_id || params[:club_id] %>
+
+          <div class="mb-3">
+            <%= form.label :name, class: "form-label" %>
+            <%= form.text_field :name, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :date, class: "form-label" %>
+            <%= form.datetime_field :date, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :location, class: "form-label" %>
+            <%= form.text_field :location, class: "form-control" %>
+          </div>
+
+          <div class="d-grid">
+            <%= form.submit class: "btn btn-primary" %>
+          </div>
+        </div>
+      <% end %>
     </div>
-  
-    <div>
-      <%= form.label :date %>
-      <%= form.datetime_field :date %>
-    </div>
-  
-    <div>
-      <%= form.label :location %>
-      <%= form.text_field :location %>
-    </div>
-  
-    <div>
-      <%= form.submit %>
-    </div>
-  <% end %>
+  </div>
+</div>
   

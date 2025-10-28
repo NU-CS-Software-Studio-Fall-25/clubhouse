@@ -1,5 +1,7 @@
 class ClubsController < ApplicationController
   before_action :set_club, only: %i[ show edit update destroy ]
+  before_action :require_user!, only: %i[new create edit update destroy]
+  before_action -> { authorize_owner!(@club) }, only: %i[edit update destroy]
 
   # GET /clubs or /clubs.json
   def index
@@ -14,7 +16,8 @@ class ClubsController < ApplicationController
 
   # GET /clubs/new
   def new
-    @club = Club.new
+    # @club = Club.new
+    @club = current_user.clubs.build
   end
 
   # GET /clubs/1/edit
@@ -23,7 +26,14 @@ class ClubsController < ApplicationController
   
   # POST /clubs or /clubs.json
   def create
-    @club = Club.new(club_params)
+    # @club = Club.new(club_params)
+    @club = current_user.clubs.build(club_params)
+
+    # if @club.save
+    #     redirect_to @club, notice "Club created! You are now the club owner."
+    # else
+    #     render :new, status: :unprocessable_entity
+    # end
 
     respond_to do |format|
       if @club.save
