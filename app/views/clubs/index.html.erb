@@ -1,36 +1,40 @@
 
 <% content_for :title, "Clubs" %>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-4 text-primary">
-          <i class="bi bi-people-fill me-2"></i>Clubs
-        </h1>
-        <%= link_to new_club_path, class: "btn btn-primary btn-lg" do %>
+        <div>
+          <h1 class="display-4 fw-bold text-primary mb-0">
+            <i class="bi bi-people-fill me-2"></i>Clubs
+          </h1>
+          <p class="text-muted lead mt-2 mb-0">Discover and join amazing communities</p>
+        </div>
+        <%= link_to new_club_path, class: "btn btn-primary btn-lg shadow-sm" do %>
           <i class="bi bi-plus-circle me-2"></i>New Club
         <% end %>
       </div>
+      <hr class="mb-4">
     </div>
   </div>
 
-  <div class="row" id="clubs">
+  <div class="row g-4" id="clubs">
     <% if @clubs.any? %>
       <% @clubs.each do |club| %>
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
           <%= render club %>
         </div>
       <% end %>
     <% else %>
       <div class="col-12">
         <div class="text-center py-5">
-          <div class="card border-0">
-            <div class="card-body">
-              <i class="bi bi-emoji-frown display-1 text-muted mb-3"></i>
-              <h3 class="text-muted">No clubs yet</h3>
-              <p class="text-muted mb-4">Get started by creating your first club!</p>
-              <%= link_to new_club_path, class: "btn btn-primary btn-lg" do %>
+          <div class="card border-0 bg-light">
+            <div class="card-body p-5">
+              <i class="bi bi-people display-1 text-primary mb-4"></i>
+              <h3 class="fw-bold mb-3">No clubs yet</h3>
+              <p class="text-muted mb-4">Be the first to create an amazing club!</p>
+              <%= link_to new_club_path, class: "btn btn-primary btn-lg shadow-sm" do %>
                 <i class="bi bi-plus-circle me-2"></i>Create Your First Club
               <% end %>
             </div>

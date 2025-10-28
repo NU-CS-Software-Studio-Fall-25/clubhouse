@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  helper_method :current_user, :user_signed_in?
+
 
   private
 
@@ -21,5 +23,5 @@ class ApplicationController < ActionController::Base
     redirect_to club_path(club), alert: 'You are not authorized to perform this action.' 
   end
 
-  helper_method :current_user, :user_signed_in?
+
 end

@@ -1,17 +1,12 @@
-<div id="<%= dom_id event %>">
-  <p>
-    <strong>Name:</strong>
-    <%= event.name %>
-  </p>
-
-  <p>
-    <strong>Date:</strong>
-    <%= event.date %>
-  </p>
-
-  <p>
-    <strong>Club:</strong>
-    <%= event.club_id %>
-  </p>
-
+<div id="<%= dom_id event %>" class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title mb-1"><%= event.name %></h5>
+    <p class="card-subtitle text-muted mb-2">
+      <i class="bi bi-clock me-1"></i>
+      <%= event.date.strftime("%B %d, %Y at %I:%M %p") if event.date %>
+    </p>
+    <% if event.location.present? %>
+      <p class="mb-0 text-muted"><i class="bi bi-geo-alt me-1"></i><%= event.location %></p>
+    <% end %>
+  </div>
 </div>

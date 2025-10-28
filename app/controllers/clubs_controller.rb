@@ -11,7 +11,8 @@ class ClubsController < ApplicationController
   # GET /clubs/1 or /clubs/1.json
   def show
     @club = Club.find(params[:id])
-    @events = @club.events.order(date: :asc)
+    # Only show upcoming events (exclude events whose date has already passed)
+    @events = @club.events.where('date >= ?', Time.current).order(date: :asc)
   end
 
   # GET /clubs/new
@@ -37,6 +38,7 @@ class ClubsController < ApplicationController
 
     respond_to do |format|
       if @club.save
+        Membership.find_or_create_by!(user: current_user, club: @club)
         format.html { redirect_to @club, notice: "Club was successfully created." }
         format.json { render :show, status: :created, location: @club }
       else

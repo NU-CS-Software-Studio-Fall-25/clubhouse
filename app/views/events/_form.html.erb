@@ -20,9 +20,40 @@
             <%= form.text_field :location, class: "form-control" %>
           </div>
 
+          <div class="mb-3">
+            <div class="form-check">
+              <%= form.check_box :recurring, class: "form-check-input", id: "event_recurring" %>
+              <%= form.label :recurring, "Recurring weekly", class: "form-check-label" %>
+            </div>
+          </div>
+
+          <div class="mb-3 d-none" id="event_end_date_field">
+            <%= form.label :end_date, "End Date", class: "form-label" %>
+            <%= form.date_field :end_date, class: "form-control" %>
+            <div class="form-text">Events will be created weekly until this date</div>
+          </div>
+
           <div class="d-grid">
             <%= form.submit class: "btn btn-primary" %>
           </div>
+
+          <script>
+            (() => {
+              const toggleEndDateField = () => {
+                const recurringCheckbox = document.getElementById('event_recurring');
+                const endDateField = document.getElementById('event_end_date_field');
+                if (recurringCheckbox && endDateField) {
+                  endDateField.classList.toggle('d-none', !recurringCheckbox.checked);
+                }
+              };
+
+              // Initial setup
+              toggleEndDateField();
+
+              // Add event listener
+              document.getElementById('event_recurring')?.addEventListener('change', toggleEndDateField);
+            })();
+          </script>
         </div>
       <% end %>
     </div>

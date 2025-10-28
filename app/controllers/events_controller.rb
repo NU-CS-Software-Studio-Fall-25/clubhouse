@@ -1,5 +1,9 @@
 class EventsController < ApplicationController
   before_action :set_event, only: %i[ show edit update destroy ]
+  before_action :require_user!, only: %i[new create edit update destroy]
+
+  before_action :set_club_from_params, only: %i[new create]
+  before_action :ensure_membership!, only: %i[new create edit update destroy]
 
   # GET /events or /events.json
   def index
@@ -12,8 +16,7 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @event = Event.new
-    @event.club_id = params[:club_id]
+    @event = Event.new(club_id: @club.id)
   end
 
   # GET /events/1/edit
@@ -28,13 +31,39 @@ class EventsController < ApplicationController
   # format.json { render json: @event.errors, status: :unprocessable_entity }
 
   def create
-    @event = Event.new(event_params)
-
-
-    if @event.save
-        redirect_to @event.club, notice: "Event created!"
-    else
+    @event = Event.new(event_params.merge(user: current_user))
+    
+    if @event.recurring == "1" && @event.end_date.present?
+      start_date = @event.date.to_date
+      end_date = Date.parse(params[:event][:end_date])
+      
+      saved_events = []
+      current_date = start_date
+      
+      while current_date <= end_date
+        new_event = Event.new(
+          name: @event.name,
+          date: @event.date.change(year: current_date.year, month: current_date.month, day: current_date.day),
+          location: @event.location,
+          club_id: @event.club_id,
+          user: @event.user
+        )
+        
+        saved_events << new_event if new_event.save
+        current_date += 7.days
+      end
+      
+      if saved_events.any?
+        redirect_to @event.club, notice: "#{saved_events.count} recurring events were created!"
+      else
         render :new, status: :unprocessable_entity
+      end
+    else
+      if @event.save
+        redirect_to @event.club, notice: "Event created!"
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -64,12 +93,28 @@ class EventsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_event
-      @event = Event.find(params.expect(:id))
+      @event = Event.find(params.require(:id))
+    end
+
+    def set_club_from_params
+        cid = params[:club_id] || event_params[:club_id]
+        @club = Club.find(cid)
+    rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
+        redirect_to clubs_path, alert: 'Club not found.'
+        return
+    end
+
+    def ensure_membership!
+        club = @club || @event&.club
+        unless current_user&.member_of?(club) || current_user&.owns?(club)
+            redirect_to club_path(club), alert: 'You must be a member of this club to do this!'
+        end
     end
 
     # Only allow a list of trusted parameters through.
     #   params.expect(event: [ :name, :date, :club_id ])
     def event_params
-        params.require(:event).permit(:name, :date, :location, :club_id)
+        params.require(:event).permit(:name, :date, :location, :club_id, :recurring, :end_date)
     end
+
 end

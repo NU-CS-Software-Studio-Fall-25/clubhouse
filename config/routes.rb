@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "memberships/create"
+  get "memberships/destroy"
   # OAuth routes
   get '/auth/:provider', to: 'auth#new', as: :auth
   get '/auth/:provider/callback', to: 'auth#callback'
@@ -6,7 +8,11 @@ Rails.application.routes.draw do
   get '/logout', to: 'auth#logout'
   
   resources :events
-  resources :clubs
+  resources :clubs do
+    resource :membership, only: [:create, :destroy]
+    resources :events, only: [:index, :new, :create, :edit, :update, :destroy]
+  end
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "clubs#index"
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
