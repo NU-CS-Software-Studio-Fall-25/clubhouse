@@ -16,7 +16,9 @@
             <i class="bi bi-plus-circle me-2"></i>New Club
           <% end %>
         <% else %>
-          <%= link_to "Sign in with Google", "/auth/google_oauth2", class: "btn btn-northwestern-purple" %>
+          <%= link_to "/auth/google_oauth2", class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+            <i class="bi bi-plus-circle me-2"></i>New Club
+          <% end %>
         <% end %>
       </div>
       <hr class="mb-4">
@@ -43,7 +45,9 @@
                   <i class="bi bi-plus-circle me-2"></i>Create Your First Club
                 <% end %>
               <% else %>
-                <%= link_to "Sign in with Google", "/auth/google_oauth2", class: "btn btn-northwestern-purple btn-lg shadow-sm" %>
+                <%= link_to "/auth/google_oauth2", class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                  <i class="bi bi-plus-circle me-2"></i>Create Your First Club
+                <% end %>
               <% end %>
             </div>
           </div>

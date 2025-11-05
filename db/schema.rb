@@ -39,6 +39,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_05_214823) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "chat_messages", force: :cascade do |t|
+    t.integer "club_id", null: false
+    t.integer "user_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_id", "created_at"], name: "index_chat_messages_on_club_id_and_created_at"
+    t.index ["club_id"], name: "index_chat_messages_on_club_id"
+    t.index ["user_id"], name: "index_chat_messages_on_user_id"
+  end
+
   create_table "clubs", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -83,6 +94,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_05_214823) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chat_messages", "clubs"
+  add_foreign_key "chat_messages", "users"
   add_foreign_key "clubs", "users"
   add_foreign_key "events", "clubs"
   add_foreign_key "events", "users"

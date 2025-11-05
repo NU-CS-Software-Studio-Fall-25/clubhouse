@@ -61,19 +61,25 @@
 }
 
 /* Card hover effects */
-.club-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
+.club-card-link {
     text-decoration: none;
     color: inherit;
     display: block;
 }
 
+.club-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.club-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
 .club-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(78, 42, 132, 0.3) !important;
-    text-decoration: none;
-    color: inherit;
 }
 
 .club-card .card-header {

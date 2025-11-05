@@ -10,9 +10,11 @@ class ClubsController < ApplicationController
 
   # GET /clubs/1 or /clubs/1.json
   def show
-    @club = Club.find(params[:id])
     # Only show upcoming events (exclude events whose date has already passed)
     @events = @club.events.where('date >= ?', Time.current).order(date: :asc)
+    @chat_messages = @club.chat_messages.includes(:user).order(created_at: :asc)
+    @new_chat_message = @club.chat_messages.build
+    @can_chat = current_user&.owns?(@club) || current_user&.member_of?(@club)
   end
 
   # GET /clubs/new

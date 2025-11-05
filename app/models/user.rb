@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :clubs, dependent: :nullify # clubs they created
   has_many :memberships, dependent: :destroy
   has_many :member_clubs, through: :memberships, source: :club
+  has_many :chat_messages, dependent: :destroy
 
 
   def self.from_omniauth(auth)
