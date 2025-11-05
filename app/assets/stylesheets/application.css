@@ -9,7 +9,95 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
- .app-container {
+/* Northwestern University Theme Colors */
+:root {
+    --northwestern-purple: #4E2A84;
+    --northwestern-purple-120: #401F68;
+    --northwestern-purple-30: #B6ACD1;
+    --northwestern-rich-black: #14141f;
+    --northwestern-bright-purple: #836EAA;
+}
+
+/* Background color classes */
+.bg-northwestern-purple {
+    background-color: var(--northwestern-purple) !important;
+}
+
+.bg-northwestern-purple-hover:hover {
+    background-color: var(--northwestern-purple-120) !important;
+    transition: background-color 0.3s ease;
+}
+
+.bg-northwestern-bright-purple {
+    background-color: var(--northwestern-bright-purple) !important;
+}
+
+/* Text color classes */
+.text-northwestern-purple {
+    color: var(--northwestern-purple) !important;
+}
+
+/* Button styles */
+.btn-northwestern-white {
+    background-color: white;
+    color: var(--northwestern-purple);
+    border: 1px solid white;
+}
+
+.btn-northwestern-white:hover {
+    background-color: var(--northwestern-purple-30);
+    color: var(--northwestern-purple);
+}
+
+.btn-northwestern-purple {
+    background-color: var(--northwestern-purple);
+    color: white;
+    border: 1px solid var(--northwestern-purple);
+}
+
+.btn-northwestern-purple:hover {
+    background-color: var(--northwestern-purple-120);
+    color: white;
+}
+
+/* Card hover effects */
+.club-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.club-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(78, 42, 132, 0.3) !important;
+    text-decoration: none;
+    color: inherit;
+}
+
+.club-card .card-header {
+    background-color: var(--northwestern-purple) !important;
+    transition: background-color 0.3s ease;
+}
+
+.club-card:hover .card-header {
+    background-color: var(--northwestern-purple-120) !important;
+}
+
+/* App container */
+.app-container {
     margin-left:  20%;
     margin-right: 20%;
- }
+    min-height: calc(100vh - 200px);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer {
+    margin-top: auto;
+}

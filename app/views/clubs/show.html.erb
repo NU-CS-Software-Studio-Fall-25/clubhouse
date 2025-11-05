@@ -3,7 +3,7 @@
     <div class="d-flex flex-row flex-wrap width-full gap-2" style="justify-content: space-between; align-items: center;">
         
         
-        <h1 class="display-4 mb-3 border-bottom pb-4 fw-bold width-100">
+        <h1 class="display-4 mb-3 border-bottom pb-4 fw-bold width-100 text-northwestern-purple">
         <%= @club.name %>
         </h1>
 
@@ -11,7 +11,7 @@
 
         <% if current_user && !current_user&.member_of?(@club) %>
             <div class="position-relative top-0 end-0 d-flex flex-row gap-2 mb-4" style="">
-                <%= button_to club_membership_path(@club), method: :post, class: "btn btn-outline-success me-2" do %>
+                <%= button_to club_membership_path(@club), method: :post, class: "btn btn-northwestern-purple me-2" do %>
                 <i class="bi bi-person-plus-fill"></i> Join Club
                 <% end %>
             </div>
@@ -44,7 +44,7 @@
 
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-white">
-      <h2 class="h3 mb-0 d-flex align-items-center">
+      <h2 class="h3 mb-0 d-flex align-items-center text-northwestern-purple">
         <i class="bi bi-calendar-event me-2"></i>
         Upcoming Events
       </h2>
@@ -80,7 +80,7 @@
   <div class="d-flex gap-2">
     <% if current_user&.member_of?(@club) %>
     
-        <%= link_to new_event_path(club_id: @club.id), class: "btn btn-primary" do %>
+        <%= link_to new_event_path(club_id: @club.id), class: "btn btn-northwestern-purple" do %>
         <i class="bi bi-plus-circle me-1"></i> Add New Event
         <% end %>
     <% end %>
