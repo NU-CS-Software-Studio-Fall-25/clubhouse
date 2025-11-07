@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Clubhouse" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#4E2A84">
+    
+    <!-- PWA support -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Clubhouse">
+    
+    <!-- iOS splash screen images -->
+    <link rel="apple-touch-startup-image" href="/splash.png">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
+    <!-- Web Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    
+    <!-- Icons -->
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -27,7 +37,9 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-northwestern-purple">
       <div class="container">
-        <%= link_to "Clubhouse", root_path, class: "navbar-brand" %>
+        <%= link_to root_path, class: "navbar-brand" do %>
+            <h1 class="mb-0">Clubhouse</h1>
+        <% end %>
         
         <div class="navbar-nav ms-auto">
           <% if user_signed_in? %>
@@ -63,5 +75,21 @@
         </div>
       </div>
     </footer>
+
+    <% if Rails.env.production? %>
+      <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+              .then(registration => {
+                console.log('Service Worker registered successfully');
+              })
+              .catch(error => {
+                console.log('Service Worker registration failed:', error);
+              });
+          });
+        }
+      </script>
+    <% end %>
   </body>
 </html>

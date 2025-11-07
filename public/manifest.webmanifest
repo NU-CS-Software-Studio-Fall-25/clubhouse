@@ -1,0 +1,13 @@
+{
+  "name": "Clubhouse",
+  "short_name": "Clubhouse",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4E2A84",
+  "icons": [
+    { "src": "./icon.ico", "sizes": "192x192", "type": "image/x-ico", "purpose": "any maskable" },
+    { "src": "./icon.ico", "sizes": "512x512", "type": "image/x-ico", "purpose": "any maskable" }
+  ]
+}
