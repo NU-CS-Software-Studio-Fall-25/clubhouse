@@ -21,6 +21,12 @@
           </div>
 
           <div class="mb-3">
+            <%= form.label :description, class: "form-label" %>
+            <%= form.text_area :description, class: "form-control", rows: 4 %>
+            <div class="form-text">Optional: provide details about the event.</div>
+          </div>
+
+          <div class="mb-3">
             <div class="form-check">
               <%= form.check_box :recurring, class: "form-check-input", id: "event_recurring" %>
               <%= form.label :recurring, "Recurring weekly", class: "form-check-label" %>

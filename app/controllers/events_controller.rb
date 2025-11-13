@@ -32,6 +32,8 @@ class EventsController < ApplicationController
 
   def create
     @event = Event.new(event_params.merge(user: current_user))
+    # ensure the creator is marked as attending by default
+    @event.users_attending = [current_user.id] if @event.users_attending.blank?
     
     if @event.recurring == "1" && @event.end_date.present?
       start_date = @event.date.to_date
@@ -48,6 +50,7 @@ class EventsController < ApplicationController
           club_id: @event.club_id,
           user: @event.user
         )
+        new_event.users_attending = [current_user.id]
         
         saved_events << new_event if new_event.save
         current_date += 7.days
@@ -114,7 +117,7 @@ class EventsController < ApplicationController
     # Only allow a list of trusted parameters through.
     #   params.expect(event: [ :name, :date, :club_id ])
     def event_params
-        params.require(:event).permit(:name, :date, :location, :club_id, :recurring, :end_date)
+      params.require(:event).permit(:name, :date, :location, :club_id, :recurring, :end_date, :description)
     end
 
 end

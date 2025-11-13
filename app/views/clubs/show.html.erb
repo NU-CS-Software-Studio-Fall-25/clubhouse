@@ -53,7 +53,7 @@
       <% if @events.any? %>
         <div class="list-group list-group-flush" style="max-height:33dvh; overflow-y:auto;">
           <% @events.each do |event| %>
-            <div class="list-group-item list-group-item-action py-2 border-start-0 border-end-0">
+            <%= link_to event_path(event), class: "list-group-item list-group-item-action py-2 border-start-0 border-end-0 text-decoration-none text-reset" do %>
               <h5 class="mb-1 fw-bold"><%= event.name %></h5>
               <p class="mb-1 text-secondary">
                 <i class="bi bi-clock me-1"></i>
@@ -65,7 +65,7 @@
                   <%= event.location %>
                 </p>
               <% end %>
-            </div>
+            <% end %>
           <% end %>
         </div>
       <% else %>
