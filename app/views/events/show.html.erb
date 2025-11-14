@@ -51,11 +51,30 @@
       </div>
 
       <div class="card shadow-sm mt-4 mb-5">
-        <div class="card-header bg-white">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
           <h2 class="h3 mb-0 d-flex align-items-center">
             <i class="bi bi-people me-2"></i>
             Attendees (<%= @event.users_attending.length %>)
           </h2>
+
+          <% if current_user.nil? %>
+            <%= link_to "Log in with Google to RSVP",
+                    new_auth_path(return_to: rsvp_event_path(@event)),
+                    class: "btn btn-primary" %>
+
+          <% elsif !@event.user_attending?(current_user) %>
+            <%= button_to "RSVP",
+                    rsvp_event_path(@event),
+                    method: :post,
+                    class: "btn btn-success" %>
+
+          <% else %>
+            <%= button_to "Un-RSVP",
+                    unrsvp_event_path(@event),
+                    method: :delete,
+                    class: "btn btn-danger" %>
+          <% end %>
+
         </div>
 
         <div class="card-body w-100">
