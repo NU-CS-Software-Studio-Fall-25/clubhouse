@@ -22,58 +22,63 @@ class AuthController < ApplicationController
     # Handle manual OAuth callback
     code = params[:code]
     state = params[:state]
-    
-    if code.present?
-      # Exchange code for access token
-      token_response = HTTParty.post('https://oauth2.googleapis.com/token', {
-        body: {
-          client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
-          client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
-          code: code,
-          grant_type: 'authorization_code',
-          redirect_uri: Rails.env.production? ? "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" : 'http://localhost:3000/auth/google_oauth2/callback'
-        }
-      })
-      
-      if token_response.success?
-        access_token = token_response['access_token']
-        refresh_token = token_response['refresh_token']
-        expires_in = token_response['expires_in']
-        # might need .seconds here -- but i think it's in seconds already
-        expires_at = Time.current + expires_in.to_i
-        
-        # Get user info from Google
-        user_response = HTTParty.get('https://www.googleapis.com/oauth2/v2/userinfo', {
-          headers: { 'Authorization' => "Bearer #{access_token}" }
-        })
-        
-        if user_response.success?
-          user_data = user_response.parsed_response
 
-          begin
-            user = User.from_google!(user_data)
-            session[:user_id] = user.id
-            redirect_to root_path, notice: 'Successfully signed in!'
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error("User save failed: #{e.record.errors.full_messages.join(', ')}")
-            redirect_to root_path, alert: "Could not create your account (#{e.record.errors.full_messages.to_sentence})."
-
-        #   user = User.find_or_create_by(google_id: user_data['id']) do |u|
-        #     u.name = user_data['name']
-        #     u.email = user_data['email']
-        #     u.avatar_url = user_data['picture']
-          end
-          
-          
-        else
-          redirect_to root_path, alert: 'Failed to get user information!'
-        end
-      else
-        redirect_to root_path, alert: 'Failed to exchange code for token!'
-      end
-    else
-      redirect_to root_path, alert: 'No authorization code received!'
+    if code.blank?
+        redirect_to root_path, alert: 'No authorization code received!'
+        return
     end
+    
+    # eschange code for access and refresh
+    token_response = HTTParty.post("https://oauth2.googleapis.com/token", {
+        body: {
+            client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
+            client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
+            code: code,
+            grant_type: "authorization_code",
+            redirect_uri: Rails.env.production? ?
+            "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" :
+            'http://localhost:3000/auth/google_oauth2/callback'
+        }
+    })
+
+    unless token_response.success?
+        redirect_to root_path, alert: 'Failed to obtain access token!'
+        return
+    end
+
+    access_token = token_response["access_token"]
+    refresh_token = token_response["refresh_token"]   # might be nil
+    expires_in = token_response["expires_in"]
+    expires_at = Time.current + expires_in.to_i
+
+    # fetch google profile
+    user_response = HTTParty.get("https://www.googleapis.com/oauth2/v2/userinfo", headers: {"Authorization" => "Bearer #{access_token}"})
+    
+    unless user_response.success?
+        redirect_to root_path, alert: 'Failed to fetch user info!'
+        return
+    end
+
+    user_data = user_response.parsed_response
+
+    # find or create user and store tokens
+    user = User.find_or_initialize_by(email: user_data["email"])
+    user.name = user_data["name"]
+    user.google_uid = user_data["id"]
+    user.avatar_url = user_data["picture"]
+
+    user.google_access_token = access_token
+    user.google_refresh_token = refresh_token if refresh_token.present?
+    user.google_token_expires_at = expires_at
+
+    if user.save
+        session[:user_id] = user.id
+        redirect_to root_path, notice: 'Successfully signed in with Google!'
+    else
+        Rails.logger.error("Failed to save user: #{user.errors.full_messages.join(', ')}")
+        redirect_to root_path, alert: 'Failed to save user!'
+    end
+
   end
 
   def failure
