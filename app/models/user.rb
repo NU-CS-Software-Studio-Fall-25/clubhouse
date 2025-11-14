@@ -33,5 +33,10 @@ class User < ApplicationRecord
     member_clubs.exists?(club.id)
   end
 
+  def google_connected?
+    google_access_token.present?
+  end
+    
+
 
 end

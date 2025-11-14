@@ -7,7 +7,13 @@ Rails.application.routes.draw do
   get '/auth/failure', to: 'auth#failure'
   get '/logout', to: 'auth#logout'
   
-  resources :events
+  resources :events do
+        member do
+            post :rsvp
+            delete :unrsvp
+
+        end
+    end
   resources :clubs do
     resource :membership, only: [:create, :destroy]
     resources :chat_messages, only: [:create, :edit, :update, :destroy]
@@ -20,6 +26,8 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
   #   root "/clubs"
+
+
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

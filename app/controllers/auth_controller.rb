@@ -6,6 +6,7 @@ class AuthController < ApplicationController
     redirect_uri = Rails.env.production? ? "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" : 'http://localhost:3000/auth/google_oauth2/callback'
     scope = 'openid email profile https://www.googleapis.com/auth/calendar'
     state = SecureRandom.hex(16)
+    session[:return_to] = params[:return_to] if params[:return_to].present?
     
     oauth_url = "https://accounts.google.com/o/oauth2/v2/auth?" +
                 "client_id=#{client_id}&" +
@@ -73,7 +74,7 @@ class AuthController < ApplicationController
 
     if user.save
         session[:user_id] = user.id
-        redirect_to root_path, notice: 'Successfully signed in with Google!'
+        redirect_to session.delete(:return_to) || root_path, notice: 'Successfully signed in with Google!'
     else
         Rails.logger.error("Failed to save user: #{user.errors.full_messages.join(', ')}")
         redirect_to root_path, alert: 'Failed to save user!'
