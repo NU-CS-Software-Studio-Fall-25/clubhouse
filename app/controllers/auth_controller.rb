@@ -30,17 +30,20 @@ class AuthController < ApplicationController
     end
     
     # eschange code for access and refresh
-    token_response = HTTParty.post("https://oauth2.googleapis.com/token", {
-        body: {
-            client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
-            client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
-            code: code,
-            grant_type: "authorization_code",
-            redirect_uri: Rails.env.production? ?
-            "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" :
-            'http://localhost:3000/auth/google_oauth2/callback'
-        }
-    })
+    token_payload = {
+        client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
+        client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
+        code: code,
+        grant_type: "authorization_code",
+        redirect_uri: Rails.env.production? ?
+        "https://clubhouse-bb0e602288cc.herokuapp.com/auth/google_oauth2/callback" :
+        'http://localhost:3000/auth/google_oauth2/callback'
+    }
+    token_response = HTTParty.post(
+        "https://oauth2.googleapis.com/token",
+        body: URI.encode_www_form(token_payload),
+        headers: { "Content-Type" => "application/x-www-form-urlencoded" }
+    )
 
     unless token_response.success?
         redirect_to root_path, alert: 'Failed to obtain access token!'
@@ -65,7 +68,7 @@ class AuthController < ApplicationController
     # find or create user and store tokens
     user = User.find_or_initialize_by(email: user_data["email"])
     user.name = user_data["name"]
-    user.google_uid = user_data["id"]
+    user.google_id = user_data["id"]
     user.avatar_url = user_data["picture"]
 
     user.google_access_token = access_token

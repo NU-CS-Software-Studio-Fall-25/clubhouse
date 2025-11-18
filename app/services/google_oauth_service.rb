@@ -4,12 +4,17 @@ class GoogleOuathService
     def self.refresh!(user)
         return unless user.google_refresh_token.present?
 
-        response = HTTParty.post(TOKEN_URL, body: {
+        payload = {
             client_id: ENV.fetch("GOOGLE_CLIENT_ID"),
             client_secret: ENV.fetch("GOOGLE_CLIENT_SECRET"),
             refresh_token: user.google_refresh_token,
             grant_type: 'refresh_token'
-        })
+        }
+        response = HTTParty.post(
+            TOKEN_URL,
+            body: URI.encode_www_form(payload),
+            headers: { "Content-Type" => "application/x-www-form-urlencoded" }
+        )
 
         if response.success?
             user.update(
