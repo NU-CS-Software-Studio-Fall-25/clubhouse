@@ -1,4 +1,4 @@
-class GoogleOuathService
+class GoogleOauthService
     TOKEN_URL = 'https://oauth2.googleapis.com/token'
 
     def self.refresh!(user)
