@@ -98,10 +98,9 @@ class EventsController < ApplicationController
   def rsvp
     @event = Event.find(params[:id])
 
-
-    # YOU WILL HAVE TO EDIT THIS WEHN YOU UPDATE THE AUTH SYSTEM!!!!!
     unless current_user
-        redirect_to new_auth_path(return_to: event_path(@event)), alert: 'You must be signed in to RSVP.'
+        redirect_to auth_google_oauth2_path(return_to: rsvp_event_path(@event)),
+        alert: 'You must be signed in to RSVP.'
         return
     end
 
@@ -109,14 +108,19 @@ class EventsController < ApplicationController
         @event.users_attending = @event.users_attending + [current_user.id]
         @event.save!
 
-        #if this user is google connected, add to their calendar
-        if current_user.google_connected?
-            GoogleCalendarService.new(current_user).create_event(@event.to_google_event)
+        # Attempt Google Calendar push BUT FAIL-OPEN
+        begin
+            # [FOR_LOCAL_AUTH] EDIT THIS WHEN UPDATING AUTH
+            if current_user.google_access_token.present?
+                GoogleCalendarService.new(current_user).create_event(@event.to_google_event)
+            end
+        rescue => e
+            Rails.logger.error("Calendar push failed: #{e.class} - #{e.message}")
+            # No user-facing error
         end
     end
 
-    redirect_to event_path(@event), notice: 'RSVP Successful!'
-
+    redirect_to event_path(@event), notice: "RSVP Successful!"
   end
 
 
