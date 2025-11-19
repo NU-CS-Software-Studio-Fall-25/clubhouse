@@ -38,24 +38,11 @@ class ClubsController < ApplicationController
         q: like_query
       )
 
-      position_target = ActiveRecord::Base.connection.quote(raw_query)
-      adapter = ActiveRecord::Base.connection.adapter_name.downcase
-
-      if adapter.include?("sqlite")
-        name_pos = "NULLIF(INSTR(LOWER(name), #{position_target}), 0)"
-        desc_pos = "NULLIF(INSTR(LOWER(COALESCE(description, '')), #{position_target}), 0)"
-        order_sql = <<~SQL.squish
-          COALESCE(MIN(#{name_pos}, #{desc_pos}), 99999), name ASC
-        SQL
-      else
-        name_pos = "NULLIF(POSITION(#{position_target} IN LOWER(name)), 0)"
-        desc_pos = "NULLIF(POSITION(#{position_target} IN LOWER(COALESCE(description, ''))), 0)"
-        order_sql = <<~SQL.squish
-          COALESCE(LEAST(#{name_pos}, #{desc_pos}), 99999), name ASC
-        SQL
-      end
-
-      @clubs = @clubs.order(Arel.sql(order_sql))
+      # Simple relevance ordering: prioritize name matches, then alphabetical
+      sanitized_query = ActiveRecord::Base.connection.quote("%#{raw_query}%")
+      @clubs = @clubs.order(
+        Arel.sql("CASE WHEN LOWER(name) LIKE #{sanitized_query} THEN 0 ELSE 1 END, name ASC")
+      )
     else
       @clubs = @clubs.order(:name)
     end
