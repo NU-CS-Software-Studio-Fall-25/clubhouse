@@ -5,8 +5,10 @@ class ClubsController < ApplicationController
 
   # GET /clubs or /clubs.json
   def index
+    @query = params[:q].to_s.strip
     @active_tab = params[:tab] || (user_signed_in? ? 'my_clubs' : 'discover')
     
+    # First, filter by tab
     if user_signed_in?
       if @active_tab == 'my_clubs'
         # Show clubs where user is owner or member
@@ -23,9 +25,9 @@ class ClubsController < ApplicationController
       # Non-logged in users only see discover
       @clubs = Club.all
       @active_tab = 'discover'
-    @query = params[:q].to_s.strip
-    @clubs = Club.all
-
+    end
+    
+    # Then apply search filter on top of tab filter
     if @query.present?
       raw_query = @query.downcase
       escaped_query = ActiveRecord::Base.sanitize_sql_like(raw_query)

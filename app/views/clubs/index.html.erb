@@ -50,6 +50,7 @@
       <div class="card">
         <div class="card-body">
           <%= form_with url: clubs_path, method: :get, local: true do |form| %>
+            <%= form.hidden_field :tab, value: @active_tab %>
             <div class="row g-2 align-items-center">
               <div class="col-lg-8 col-md-7 col-sm-12">
                 <div class="input-group input-group-lg">
@@ -60,7 +61,7 @@
               <div class="col-lg-4 col-md-5 col-sm-12 d-flex gap-2">
                 <%= form.submit "Search", class: "btn btn-northwestern-purple btn-lg flex-fill shadow-sm" %>
                 <% if @query.present? %>
-                  <%= link_to "Clear", clubs_path, class: "btn btn-outline-secondary btn-lg flex-fill" %>
+                  <%= link_to "Clear", clubs_path(tab: @active_tab), class: "btn btn-outline-secondary btn-lg flex-fill" %>
                 <% end %>
               </div>
             </div>
