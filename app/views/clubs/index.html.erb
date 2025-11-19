@@ -87,40 +87,54 @@
           <div class="card border-0 bg-light">
             <div class="card-body p-5">
               <% if @active_tab == 'my_clubs' %>
-                <i class="bi bi-person-heart display-1 text-northwestern-purple mb-4"></i>
-                <h3 class="fw-bold mb-3">You haven't joined any clubs yet</h3>
-                <p class="text-muted mb-4">Explore clubs in the Discover tab or create your own!</p>
-                <div class="d-flex gap-3 justify-content-center">
-                  <%= link_to clubs_path(tab: 'discover'), class: "btn btn-outline-secondary btn-lg" do %>
-                    <i class="bi bi-compass me-2"></i>Discover Clubs
-                  <% end %>
-                  <%= link_to new_club_path, class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
-                    <i class="bi bi-plus-circle me-2"></i>Create a Club
-                  <% end %>
-                </div>
-              <% else %>
-                <i class="bi bi-compass display-1 text-northwestern-purple mb-4"></i>
-                <h3 class="fw-bold mb-3">
-                  <% if user_signed_in? %>
-                    You've discovered all the clubs!
-                  <% else %>
-                    No clubs yet
-                  <% end %>
-                </h3>
-                <p class="text-muted mb-4">
-                  <% if user_signed_in? %>
-                    You're already a member of all available clubs, or be the first to create a new one!
-                  <% else %>
-                    Be the first to create an amazing club!
-                  <% end %>
-                </p>
-                <% if user_signed_in? %>
-                  <%= link_to new_club_path, class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
-                    <i class="bi bi-plus-circle me-2"></i>Create a Club
-                  <% end %>
+                <% if @query.present? %>
+                  <i class="bi bi-search display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">No clubs found matching "<%= @query %>"</h3>
+                  <p class="text-muted mb-4">Try a different search term or explore all your clubs.</p>
+                  <%= link_to "Clear Search", clubs_path(tab: 'my_clubs'), class: "btn btn-northwestern-purple btn-lg shadow-sm" %>
                 <% else %>
-                  <%= link_to "/auth/google_oauth2", class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign in to Create Club
+                  <i class="bi bi-person-heart display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">You haven't joined any clubs yet</h3>
+                  <p class="text-muted mb-4">Explore clubs in the Discover tab or create your own!</p>
+                  <div class="d-flex gap-3 justify-content-center">
+                    <%= link_to clubs_path(tab: 'discover'), class: "btn btn-outline-secondary btn-lg" do %>
+                      <i class="bi bi-compass me-2"></i>Discover Clubs
+                    <% end %>
+                    <%= link_to new_club_path, class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                      <i class="bi bi-plus-circle me-2"></i>Create a Club
+                    <% end %>
+                  </div>
+                <% end %>
+              <% else %>
+                <% if @query.present? %>
+                  <i class="bi bi-search display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">No clubs found matching "<%= @query %>"</h3>
+                  <p class="text-muted mb-4">Try a different search term or explore all available clubs.</p>
+                  <%= link_to "Clear Search", clubs_path(tab: 'discover'), class: "btn btn-northwestern-purple btn-lg shadow-sm" %>
+                <% else %>
+                  <i class="bi bi-compass display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">
+                    <% if user_signed_in? %>
+                      You've discovered all the clubs!
+                    <% else %>
+                      No clubs yet
+                    <% end %>
+                  </h3>
+                  <p class="text-muted mb-4">
+                    <% if user_signed_in? %>
+                      You're already a member of all available clubs, or be the first to create a new one!
+                    <% else %>
+                      Be the first to create an amazing club!
+                    <% end %>
+                  </p>
+                  <% if user_signed_in? %>
+                    <%= link_to new_club_path, class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                      <i class="bi bi-plus-circle me-2"></i>Create a Club
+                    <% end %>
+                  <% else %>
+                    <%= link_to "/auth/google_oauth2", class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                      <i class="bi bi-box-arrow-in-right me-2"></i>Sign in to Create Club
+                    <% end %>
                   <% end %>
                 <% end %>
               <% end %>
