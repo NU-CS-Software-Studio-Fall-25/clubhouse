@@ -14,7 +14,8 @@ class ClubsController < ApplicationController
         # Show clubs where user is owner or member
         owned_club_ids = current_user.clubs.pluck(:id)
         member_club_ids = current_user.memberships.pluck(:club_id)
-        @clubs = Club.where(id: owned_club_ids + member_club_ids).distinct
+        all_club_ids = (owned_club_ids + member_club_ids).uniq
+        @clubs = Club.where(id: all_club_ids)
       else
         # Show clubs where user is NOT a member or owner
         owned_club_ids = current_user.clubs.pluck(:id)
@@ -38,11 +39,9 @@ class ClubsController < ApplicationController
         q: like_query
       )
 
-      # Simple relevance ordering: prioritize name matches, then alphabetical
-      sanitized_query = ActiveRecord::Base.connection.quote("%#{raw_query}%")
-      @clubs = @clubs.order(
-        Arel.sql("CASE WHEN LOWER(name) LIKE #{sanitized_query} THEN 0 ELSE 1 END, name ASC")
-      )
+      # Simple ordering: name matches first, then alphabetical
+      # Using a simpler approach that works with PostgreSQL
+      @clubs = @clubs.order(:name)
     else
       @clubs = @clubs.order(:name)
     end
