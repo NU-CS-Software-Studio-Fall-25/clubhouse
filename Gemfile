@@ -76,3 +76,11 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
+
+group :test do
+    gem 'cucumber-rails', require: false
+    gem 'database_cleaner-active_record'
+    gem 'capybara'
+    gem 'selenium-webdriver'
+    gem 'factory_bot_rails'
+end

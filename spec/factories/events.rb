@@ -6,6 +6,8 @@ FactoryBot.define do
     date { Time.current + 1.day }
     location { "Campus" }
     description { "Practice" }
-    users_attending { [ user.id ] }
+    
+    users_attending { [].to_json }
+
   end
 end

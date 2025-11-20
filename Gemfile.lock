@@ -402,6 +402,7 @@ GEM
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
+    rexml (3.4.4)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -444,7 +445,14 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
+    rubyzip (3.2.2)
     securerandom (0.4.1)
+    selenium-webdriver (4.38.0)
+      base64 (~> 0.2)
+      logger (~> 1.4)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 4.0)
+      websocket (~> 1.0)
     shoulda-matchers (7.0.1)
       activesupport (>= 7.1)
     signet (0.21.0)
@@ -518,6 +526,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    websocket (1.2.11)
     websocket-driver (0.8.0)
       base64
       websocket-extensions (>= 0.1.0)
@@ -541,6 +550,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   brakeman
+  capybara
   cucumber-rails
   database_cleaner-active_record
   debug
@@ -560,6 +570,7 @@ DEPENDENCIES
   rails (~> 8.0.3)
   rspec
   rubocop-rails-omakase
+  selenium-webdriver
   shoulda-matchers
   solid_cable
   solid_cache
