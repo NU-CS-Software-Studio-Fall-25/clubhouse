@@ -9,6 +9,7 @@ class User < ApplicationRecord
   validates :google_id, presence: true, if: -> { provider == 'google' }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { provider == 'password' && password.present? }
   validates :password_digest, presence: true, if: -> { provider == 'password' }
+  validates :password, confirmation: true, if: -> { provider == 'password' && password.present? }
 
   has_many :clubs, dependent: :nullify # clubs they created
   has_many :memberships, dependent: :destroy
