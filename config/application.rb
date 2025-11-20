@@ -38,5 +38,7 @@ module Clubhouse
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.middleware.use RackSessionAccess::Middleware if Rails.env.test?
   end
 end

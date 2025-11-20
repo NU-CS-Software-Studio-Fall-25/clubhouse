@@ -66,7 +66,6 @@ group :development, :test do
 
   # Backend test stack
   gem "rspec"
-  gem "cucumber-rails", require: false
   gem "database_cleaner-active_record"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
@@ -78,9 +77,11 @@ group :development do
 end
 
 group :test do
-    gem 'cucumber-rails', require: false
-    gem 'database_cleaner-active_record'
-    gem 'capybara'
-    gem 'selenium-webdriver'
-    gem 'factory_bot_rails'
+  gem "cucumber-rails", require: false
+  gem "cucumber"
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "database_cleaner-active_record"
+  gem "factory_bot_rails"
+  gem "rack_session_access"
 end

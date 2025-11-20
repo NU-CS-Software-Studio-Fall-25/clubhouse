@@ -6,16 +6,6 @@
 
 
 require 'cucumber/rails'
-require 'capybara/rails'
-require 'capybara/cucumber'
-require 'warden'
-
-Capybara.default_driver = :rack_test
-Capybara.javascript_driver = :selenium_chrome_headless
-
-
-include Warden::Test::Helpers
-Warden.test_mode!
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
@@ -61,3 +51,15 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+require 'rack_session_access/capybara'
+
+module AuthHelpers
+  def log_in_as(user)
+    # Cucumber runs outside controller context by default,
+    # so we use rack-test to set the session manually.
+    page.set_rack_session(user_id: user.id)
+  end
+end
+
+World(AuthHelpers)
