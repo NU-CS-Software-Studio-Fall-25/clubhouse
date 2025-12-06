@@ -110,15 +110,16 @@ class EventsController < ApplicationController
         @event.save!
 
         # Attempt Google Calendar push BUT FAIL-OPEN
-        begin
-            # [FOR_LOCAL_AUTH] EDIT THIS WHEN UPDATING AUTH
-            if current_user.google_access_token.present?
-                GoogleCalendarService.new(current_user).create_event(@event.to_google_event)
-            end
-        rescue => e
-            Rails.logger.error("Calendar push failed: #{e.class} - #{e.message}")
-          # No user-facing error
-        end
+        # REMOVED GOOGLE CALENDAR PUSH FOR NOW
+        # begin
+        #     # [FOR_LOCAL_AUTH] EDIT THIS WHEN UPDATING AUTH
+        #     if current_user.google_access_token.present?
+        #         GoogleCalendarService.new(current_user).create_event(@event.to_google_event)
+        #     end
+        # rescue => e
+        #     Rails.logger.error("Calendar push failed: #{e.class} - #{e.message}")
+        #   # No user-facing error
+        # end
     end
 
     redirect_to event_path(@event), notice: "RSVP Successful!"

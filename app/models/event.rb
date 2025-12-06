@@ -34,46 +34,46 @@ class Event < ApplicationRecord
         self[:users_attending] = arr.to_json
     end
 
-    def to_google_event
-        # Google requires BOTH start and end. Default to 1 hour.
-        start_time = date
-        end_time   = date + 1.hour
+    # def to_google_event
+    #     # Google requires BOTH start and end. Default to 1 hour.
+    #     start_time = date
+    #     end_time   = date + 1.hour
 
-        event_hash = {
-            summary: name,
-            description: description.presence,
-            location: location.presence,
-            start: {
-            date_time: start_time.iso8601
-            },
-            end: {
-            date_time: end_time.iso8601
-            }
-        }
+    #     event_hash = {
+    #         summary: name,
+    #         description: description.presence,
+    #         location: location.presence,
+    #         start: {
+    #         date_time: start_time.iso8601
+    #         },
+    #         end: {
+    #         date_time: end_time.iso8601
+    #         }
+    #     }
 
-        # Add attendees if present
-        if users_attending.present?
-            # Convert from user IDs → user emails
-            attendee_emails = User.where(id: users_attending).pluck(:email)
+    #     # Add attendees if present
+    #     if users_attending.present?
+    #         # Convert from user IDs → user emails
+    #         attendee_emails = User.where(id: users_attending).pluck(:email)
 
-            event_hash[:attendees] = attendee_emails.map do |email|
-            { email: email }
-            end
-        end
+    #         event_hash[:attendees] = attendee_emails.map do |email|
+    #         { email: email }
+    #         end
+    #     end
 
-        # Add recurrence if recurring flag is set
-        # if recurring == "1" && end_date.present?
-        #     event_hash[:recurrence] = [
-        #     "RRULE:FREQ=DAILY;UNTIL=#{Date.parse(end_date).strftime('%Y%m%d')}"
-        #     ]
-        # end
+    #     # Add recurrence if recurring flag is set
+    #     # if recurring == "1" && end_date.present?
+    #     #     event_hash[:recurrence] = [
+    #     #     "RRULE:FREQ=DAILY;UNTIL=#{Date.parse(end_date).strftime('%Y%m%d')}"
+    #     #     ]
+    #     # end
 
-        event_hash
-    end
+    #     event_hash
+    # end
 
-    def user_attending?(user)
-        users_attending.include?(user.id)
-    end
+    # def user_attending?(user)
+    #     users_attending.include?(user.id)
+    # end
 
 
 

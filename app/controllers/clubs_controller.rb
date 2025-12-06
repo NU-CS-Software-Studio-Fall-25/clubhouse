@@ -138,14 +138,15 @@ class ClubsController < ApplicationController
         event.save!
 
         # Push to Google Calendar if possible
-        begin
-            if current_user.google_access_token.present?
-                GoogleCalendarService.new(current_user).create_event(event.to_google_event)
-            end
+        # USED TO PUSH TO GOOGLE CALENDAR, BUT REMOVED FOR NOW
+        # begin
+        #     if current_user.google_access_token.present?
+        #         GoogleCalendarService.new(current_user).create_event(event.to_google_event)
+        #     end
 
-        rescue => e
-            Rails.logger.error("Calendar push failed for event #{event.id}: #{e.message}")
-        end
+        # rescue => e
+        #     Rails.logger.error("Calendar push failed for event #{event.id}: #{e.message}")
+        # end
     end
 
     redirect_to club_path(club), notice: "You RSVP'd to #{events.count} upcoming events!"
