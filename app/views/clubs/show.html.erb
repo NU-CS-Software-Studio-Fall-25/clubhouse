@@ -112,7 +112,7 @@
                           <% end %>
                         </small>
                       </div>
-                      <div class="mt-2"><%= simple_format(message.content) %></div>
+                      <div class="mt-2 chat-message-content"><%= simple_format(message.content) %></div>
                     </div>
                     <% if current_user && message.user == current_user %>
                       <div class="d-flex gap-2 ms-3">
