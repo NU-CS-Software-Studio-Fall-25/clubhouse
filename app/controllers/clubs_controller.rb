@@ -1,5 +1,5 @@
 class ClubsController < ApplicationController
-  before_action :set_club, only: %i[ show edit update destroy ]
+  before_action :set_club, only: %i[ show edit update destroy members ]
   before_action :require_user!, only: %i[new create edit update destroy]
   before_action -> { authorize_owner!(@club) }, only: %i[edit update destroy]
 
@@ -54,6 +54,10 @@ class ClubsController < ApplicationController
     @chat_messages = @club.chat_messages.includes(:user).order(created_at: :asc)
     @new_chat_message = @club.chat_messages.build
     @can_chat = current_user&.owns?(@club) || current_user&.member_of?(@club)
+  end
+
+  def members
+    @members = @club.members.order(:name)
   end
 
   # GET /clubs/new

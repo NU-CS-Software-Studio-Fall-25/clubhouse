@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     member do
         post :rsvp_all_events
         get :download_combined_ics
+        get :members
     end
 
     resource :membership, only: [ :create, :destroy ]

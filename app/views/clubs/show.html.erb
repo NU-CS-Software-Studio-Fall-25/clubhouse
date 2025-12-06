@@ -161,12 +161,15 @@
     </div>
   </section>
 
-  <div class="d-flex gap-2">
+  <div class="d-flex gap-2 flex-wrap">
     <% if current_user&.member_of?(@club) %>
     
         <%= link_to new_event_path(club_id: @club.id), class: "btn btn-northwestern-purple" do %>
         <i class="bi bi-plus-circle me-1"></i> Add New Event
         <% end %>
+    <% end %>
+    <%= link_to members_club_path(@club), class: "btn btn-outline-secondary" do %>
+      <i class="bi bi-people me-1"></i> View Members
     <% end %>
     <%= link_to clubs_path, class: "btn btn-outline-secondary" do %>
       <i class="bi bi-arrow-left me-1"></i> Back to All Clubs
