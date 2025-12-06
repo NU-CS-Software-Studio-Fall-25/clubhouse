@@ -57,7 +57,17 @@ class ClubsController < ApplicationController
   end
 
   def members
-    @members = @club.members.order(:name)
+    @member_query = params[:q].to_s.strip
+    @members = @club.members
+
+    if @member_query.present?
+      raw_query = @member_query.downcase
+      escaped = ActiveRecord::Base.sanitize_sql_like(raw_query)
+      like_query = "%#{escaped}%"
+      @members = @members.where("LOWER(users.name) LIKE ?", like_query)
+    end
+
+    @members = @members.order(:name)
   end
 
   # GET /clubs/new

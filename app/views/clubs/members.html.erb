@@ -7,6 +7,23 @@
     <%= link_to "Back to Club", club_path(@club), class: "btn btn-outline-secondary" %>
   </div>
 
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <%= form_with url: members_club_path(@club), method: :get, local: true, class: "row g-2 align-items-end" do |form| %>
+        <div class="col-md-8">
+          <%= form.label :q, "Search members", class: "form-label" %>
+          <%= form.text_field :q, value: @member_query, class: "form-control", placeholder: "Enter a name..." %>
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <%= form.submit "Search", class: "btn btn-northwestern-purple flex-grow-1" %>
+          <% if @member_query.present? %>
+            <%= link_to "Clear", members_club_path(@club), class: "btn btn-outline-secondary flex-grow-1" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <% if @members.any? %>
     <div class="card shadow-sm">
       <div class="list-group list-group-flush">
@@ -26,6 +43,10 @@
       </div>
     </div>
   <% else %>
-    <div class="alert alert-info mb-0">No members have joined this club yet.</div>
+    <% if @member_query.present? %>
+      <div class="alert alert-warning mb-0">No members match "<%= @member_query %>".</div>
+    <% else %>
+      <div class="alert alert-info mb-0">No members have joined this club yet.</div>
+    <% end %>
   <% end %>
 </div>
