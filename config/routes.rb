@@ -26,12 +26,14 @@ Rails.application.routes.draw do
             get :rsvp_start
             post :rsvp
             delete :unrsvp
+            get :download_ics
         end
   end
 
   resources :clubs do
     member do
         post :rsvp_all_events
+        get :download_combined_ics
     end
 
     resource :membership, only: [ :create, :destroy ]

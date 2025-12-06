@@ -94,6 +94,7 @@ class EventsController < ApplicationController
   end
 
 
+
   # rzxsvp!
   def rsvp
     @event = Event.find(params[:id])
@@ -122,7 +123,9 @@ class EventsController < ApplicationController
         # end
     end
 
-    redirect_to event_path(@event), notice: "RSVP Successful!"
+    # redirect_to event_path(@event), notice: "RSVP Successful!"
+    redirect_to event_path(@event, show_ics_modal: true), notice: "RSVP Successful!"
+
   end
 
 
@@ -149,6 +152,17 @@ class EventsController < ApplicationController
     # flash.discard
     render :show
   end
+
+  def download_ics
+    event = Event.find(params[:id])
+    ics = IcsGenerator.event(event)
+
+    send_data ics,
+        filename: "#{event.name.parameterize}.ics",
+        type: "text/calendar",
+        disposition: "attachment"
+    end
+
 
 
 

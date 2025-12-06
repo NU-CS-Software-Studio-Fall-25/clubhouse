@@ -172,4 +172,54 @@
       <i class="bi bi-arrow-left me-1"></i> Back to All Clubs
     <% end %>
   </div>
+
+  <div id="combinedIcsModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+        <h3>Add All Events to Your Calendar?</h3>
+        <p>You just RSVP'd to all upcoming club events. Would you like to download a single calendar file containing all of them?</p>
+
+        <div class="modal-actions">
+        <a href="<%= download_combined_ics_club_path(@club) %>"
+            class="btn btn-primary">Download Combined ICS</a>
+
+        <button id="closeCombinedIcsModal" class="btn btn-secondary">No Thanks</button>
+        </div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      try {
+        var urlParams = new URLSearchParams(window.location.search || '');
+        var show = urlParams.get('show_combined_ics_modal');
+        var modal = document.getElementById('combinedIcsModal');
+        var closeBtn = document.getElementById('closeCombinedIcsModal');
+        var downloadLink = modal && modal.querySelector('a[href]');
+
+        function hideAndClean() {
+          if (modal) modal.style.display = 'none';
+          var base = window.location.href.split('?')[0];
+          try { window.history.replaceState({}, document.title, base); } catch(e) { /* noop */ }
+        }
+
+        if (show && modal) {
+          modal.style.display = 'flex';
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            hideAndClean();
+          });
+        }
+
+        if (downloadLink) {
+          downloadLink.addEventListener('click', function() {
+            if (modal) modal.style.display = 'none';
+          });
+        }
+      } catch (err) {
+        console && console.error && console.error('Combined ICS modal init error:', err);
+      }
+    })();
+  </script>
 </div>

@@ -71,9 +71,10 @@ class Event < ApplicationRecord
     #     event_hash
     # end
 
-    # def user_attending?(user)
-    #     users_attending.include?(user.id)
-    # end
+    def user_attending?(user)
+        return false if user.nil?
+        users_attending.include?(user.id)
+    end
 
 
 

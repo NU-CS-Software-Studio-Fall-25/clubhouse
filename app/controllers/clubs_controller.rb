@@ -149,8 +149,31 @@ class ClubsController < ApplicationController
         # end
     end
 
-    redirect_to club_path(club), notice: "You RSVP'd to #{events.count} upcoming events!"
+    # redirect_to club_path(club), notice: "You RSVP'd to #{events.count} upcoming events!"
+    # redirect_to club_path(club, show_ics_modal: true), notice: "You RSVP'd to #{events.count} upcoming events!"
+    redirect_to club_path(club, show_combined_ics_modal: true), notice: "You RSVP'd to #{events.count} upcoming events!"
+
+
+
   end
+
+  def download_combined_ics
+    club = Club.find(params[:id])
+    events = club.events.where("date >= ?", Time.current).order(:date)
+
+    if events.empty?
+        redirect_to club_path(club), alert: "No upcoming events to download."
+        return
+    end
+
+    ics = IcsCombinedGenerator.events(events)
+
+    send_data ics,
+        filename: "#{club.name.parameterize}-upcoming-events.ics",
+        type: "text/calendar",
+        disposition: "attachment"
+  end
+
 
 
   private
