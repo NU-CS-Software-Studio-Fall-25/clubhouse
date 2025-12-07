@@ -51,7 +51,16 @@ class User < ApplicationRecord
   end
 
   def member_of?(club)
-    member_clubs.exists?(club.id)
+    memberships.approved.exists?(club_id: club.id)
+  end
+  
+  def pending_request_for?(club)
+    memberships.pending.exists?(club_id: club.id)
+  end
+  
+  def membership_status_for(club)
+    membership = memberships.find_by(club_id: club.id)
+    membership&.status
   end
 
   def google_connected?

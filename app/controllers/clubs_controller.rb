@@ -1,7 +1,7 @@
 class ClubsController < ApplicationController
-  before_action :set_club, only: %i[ show edit update destroy members ]
+  before_action :set_club, only: %i[ show edit update destroy members pending_requests ]
   before_action :require_user!, only: %i[new create edit update destroy]
-  before_action -> { authorize_owner!(@club) }, only: %i[edit update destroy]
+  before_action -> { authorize_owner!(@club) }, only: %i[edit update destroy pending_requests]
 
   # GET /clubs or /clubs.json
   def index
@@ -13,14 +13,19 @@ class ClubsController < ApplicationController
       if @active_tab == "my_clubs"
         # Show clubs where user is owner or member
         owned_club_ids = current_user.clubs.pluck(:id)
-        member_club_ids = current_user.memberships.pluck(:club_id)
+        member_club_ids = current_user.memberships.approved.pluck(:club_id)
         all_club_ids = (owned_club_ids + member_club_ids).uniq
         @clubs = Club.where(id: all_club_ids)
+      elsif @active_tab == "pending_requests"
+        # Show clubs where user has pending membership requests
+        pending_club_ids = current_user.memberships.pending.pluck(:club_id)
+        @clubs = Club.where(id: pending_club_ids)
       else
-        # Show clubs where user is NOT a member or owner
+        # Show clubs where user is NOT a member or owner and has no pending request
         owned_club_ids = current_user.clubs.pluck(:id)
-        member_club_ids = current_user.memberships.pluck(:club_id)
-        @clubs = Club.where.not(id: owned_club_ids + member_club_ids)
+        member_club_ids = current_user.memberships.approved.pluck(:club_id)
+        pending_club_ids = current_user.memberships.pending.pluck(:club_id)
+        @clubs = Club.where.not(id: owned_club_ids + member_club_ids + pending_club_ids)
       end
     else
       # Non-logged in users only see discover
@@ -69,6 +74,10 @@ class ClubsController < ApplicationController
 
     @members = @members.order(:name)
   end
+  
+  def pending_requests
+    @pending_memberships = @club.pending_memberships.includes(:user).order(created_at: :asc)
+  end
 
   # GET /clubs/new
   def new
@@ -93,7 +102,10 @@ class ClubsController < ApplicationController
 
     respond_to do |format|
       if @club.save
-        Membership.find_or_create_by!(user: current_user, club: @club)
+        # Club owner is automatically an approved member
+        membership = Membership.find_or_initialize_by(user: current_user, club: @club)
+        membership.status = "approved"
+        membership.save!
         format.html { redirect_to @club, notice: "Club was successfully created." }
         format.json { render :show, status: :created, location: @club }
       else

@@ -35,9 +35,18 @@ Rails.application.routes.draw do
         post :rsvp_all_events
         get :download_combined_ics
         get :members
+        get :pending_requests
     end
 
     resource :membership, only: [ :create, :destroy ]
+    
+    resources :memberships, only: [] do
+      member do
+        patch :approve
+        patch :reject
+      end
+    end
+    
     resources :chat_messages, only: [ :create, :edit, :update, :destroy ]
     resources :events, only: [ :index, :new, :create, :edit, :update, :destroy ]
   end

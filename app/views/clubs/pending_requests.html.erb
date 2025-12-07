@@ -1,0 +1,84 @@
+<section class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-northwestern-purple">
+      <i class="bi bi-person-check me-2"></i>
+      Pending Join Requests
+    </h1>
+    <%= link_to club_path(@club), class: "btn btn-outline-secondary" do %>
+      <i class="bi bi-arrow-left me-1"></i> Back to Club
+    <% end %>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-white">
+      <h2 class="h4 mb-0">
+        <%= @club.name %>
+      </h2>
+      <p class="text-muted mb-0">
+        <%= pluralize(@pending_memberships.count, "pending request") %>
+      </p>
+    </div>
+    
+    <div class="card-body">
+      <% if @pending_memberships.any? %>
+        <div class="list-group">
+          <% @pending_memberships.each do |membership| %>
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center flex-grow-1">
+                <% if membership.user.avatar_url.present? %>
+                  <%= image_tag membership.user.avatar_url, class: "rounded-circle me-3", style: "width: 50px; height: 50px; object-fit: cover;" %>
+                <% else %>
+                  <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                <% end %>
+                
+                <div>
+                  <h5 class="mb-1"><%= membership.user.name %></h5>
+                  <p class="text-muted mb-0">
+                    <small>
+                      <i class="bi bi-envelope me-1"></i>
+                      <%= membership.user.email %>
+                    </small>
+                  </p>
+                  <p class="text-muted mb-0">
+                    <small>
+                      <i class="bi bi-clock me-1"></i>
+                      Requested <%= time_ago_in_words(membership.created_at) %> ago
+                    </small>
+                  </p>
+                </div>
+              </div>
+              
+              <div class="d-flex gap-2">
+                <%= button_to approve_club_membership_path(@club, membership), 
+                    method: :patch,
+                    class: "btn btn-success",
+                    data: { confirm: "Approve #{membership.user.name} to join this club?" } do %>
+                  <i class="bi bi-check-circle me-1"></i> Approve
+                <% end %>
+                
+                <%= button_to reject_club_membership_path(@club, membership), 
+                    method: :patch,
+                    class: "btn btn-danger",
+                    data: { confirm: "Reject #{membership.user.name}'s request to join?" } do %>
+                  <i class="bi bi-x-circle me-1"></i> Reject
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <h3 class="mt-3 text-muted">No Pending Requests</h3>
+          <p class="text-muted">There are currently no pending membership requests for this club.</p>
+          <%= link_to club_path(@club), class: "btn btn-northwestern-purple mt-3" do %>
+            <i class="bi bi-arrow-left me-1"></i> Back to Club
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
