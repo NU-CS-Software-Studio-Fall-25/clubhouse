@@ -182,6 +182,22 @@ body {
     overflow-wrap: anywhere;
 }
 
+.member-profile-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    margin: -0.5rem;
+}
+
+.member-profile-link:hover {
+    background-color: rgba(78, 42, 132, 0.08);
+    box-shadow: 0 10px 25px rgba(78, 42, 132, 0.2);
+    transform: translateY(-3px);
+}
+
 /* for the modal  */
 
 .modal-backdrop {

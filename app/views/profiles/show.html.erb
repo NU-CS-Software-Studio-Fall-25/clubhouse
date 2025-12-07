@@ -1,0 +1,44 @@
+<div class="py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h2 text-northwestern-purple mb-1">My Profile</h1>
+      <p class="text-muted mb-0">Share a bit more about yourself with other club members.</p>
+    </div>
+    <%= link_to "Back to Clubs", clubs_path, class: "btn btn-outline-secondary" %>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <%= form_with model: @user, url: profile_path, method: :patch, local: true do |form| %>
+        <% if @user.errors.any? %>
+          <div class="alert alert-danger">
+            <p class="mb-2"><strong><%= pluralize(@user.errors.count, "error") %> prevented your profile from being saved:</strong></p>
+            <ul class="mb-0">
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :description, "Description", class: "form-label" %>
+          <%= form.text_area :description, class: "form-control", rows: 4, placeholder: "Tell clubs who you are, your interests, or goals..." %>
+          <div class="form-text">Max 1000 characters.</div>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :major, "Major", class: "form-label" %>
+          <%= form.text_field :major, class: "form-control", placeholder: "e.g., Computer Science" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :graduation_year, "Graduation Year", class: "form-label" %>
+          <%= form.number_field :graduation_year, class: "form-control", placeholder: "e.g., 2026", min: 1900, max: 2100 %>
+        </div>
+
+        <%= form.submit "Save Profile", class: "btn btn-northwestern-purple" %>
+      <% end %>
+    </div>
+  </div>
+</div>

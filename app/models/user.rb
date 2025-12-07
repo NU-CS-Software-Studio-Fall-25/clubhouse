@@ -10,6 +10,15 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, if: -> { provider == 'password' && password.present? }
   validates :password_digest, presence: true, if: -> { provider == 'password' }
   validates :password, confirmation: true, if: -> { provider == 'password' && password.present? }
+  validates :description, length: { maximum: 1000 }, allow_blank: true
+  validates :major, length: { maximum: 100 }, allow_blank: true
+  validates :graduation_year,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 1900,
+              less_than_or_equal_to: 2100
+            },
+            allow_nil: true
 
   has_many :clubs, dependent: :nullify # clubs they created
   has_many :memberships, dependent: :destroy
