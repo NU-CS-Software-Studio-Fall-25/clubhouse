@@ -11,6 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_12_07_011848) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_07_000000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -95,6 +96,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_07_011848) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.string "provider", default: "google", null: false
+    t.text "description"
+    t.integer "graduation_year"
+    t.string "major"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true
   end

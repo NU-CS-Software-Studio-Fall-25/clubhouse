@@ -182,6 +182,67 @@ body {
     overflow-wrap: anywhere;
 }
 
+.member-profile-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    margin: -0.5rem;
+}
+
+.member-profile-link:hover {
+    background-color: rgba(78, 42, 132, 0.08);
+    box-shadow: 0 10px 25px rgba(78, 42, 132, 0.2);
+    transform: translateY(-3px);
+}
+
+.club-avatar,
+.user-avatar {
+    --avatar-size: 64px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: 999px;
+    overflow: hidden;
+    background-color: var(--northwestern-purple-30);
+    color: var(--northwestern-purple);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(78, 42, 132, 0.2);
+.club-avatar-sm,
+.user-avatar-sm { --avatar-size: 48px; }
+.club-avatar-md,
+.user-avatar-md { --avatar-size: 64px; }
+.club-avatar-lg,
+.user-avatar-lg { --avatar-size: 80px; }
+.club-avatar-xl,
+.user-avatar-xl { --avatar-size: 110px; }
+
+.club-avatar-img,
+.user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.club-avatar-initials,
+.user-avatar-initials {
+    font-size: calc(var(--avatar-size) / 2.3);
+    letter-spacing: 1px;
+}
+
+.card-header .club-avatar {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: none;
+}
+
 /* for the modal  */
 
 .modal-backdrop {

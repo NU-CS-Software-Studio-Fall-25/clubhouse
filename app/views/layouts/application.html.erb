@@ -46,6 +46,7 @@
             <span class="navbar-text me-3">
               Welcome, <%= current_user.name %>!
             </span>
+            <%= link_to "My Profile", profile_path, class: "btn btn-light me-2" %>
             <%= link_to "Logout", logout_path, method: :get, class: "btn btn-outline-light" %>
           <% else %>
             <%= link_to "Sign In", signin_path, class: "btn btn-outline-light me-2" %>

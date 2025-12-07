@@ -51,6 +51,9 @@ Rails.application.routes.draw do
     resources :events, only: [ :index, :new, :create, :edit, :update, :destroy ]
   end
 
+  resource :profile, only: [ :show, :update ]
+  resources :users, only: [ :show ]
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "clubs#index"
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
