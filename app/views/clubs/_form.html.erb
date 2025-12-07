@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <%= form_with(model: club, class: "card shadow-sm") do |form| %>
+      <%= form_with(model: club, class: "card shadow-sm", html: { multipart: true }) do |form| %>
         <div class="card-body">
           <% if club.errors.any? %>
             <div class="alert alert-danger">
@@ -22,6 +22,19 @@
           <div class="mb-3">
             <%= form.label :description, class: "form-label" %>
             <%= form.text_area :description, class: "form-control", rows: 5 %>
+          </div>
+
+          <div class="mb-4">
+            <%= form.label :profile_photo, "Profile Picture", class: "form-label" %>
+            <% if club.profile_photo.attached? %>
+              <div class="mb-2">
+                <div class="club-avatar club-avatar-md">
+                  <%= image_tag club.profile_photo, class: "club-avatar-img", alt: "#{club.name} current profile photo" %>
+                </div>
+              </div>
+            <% end %>
+            <%= form.file_field :profile_photo, class: "form-control", accept: "image/png,image/jpeg,image/jpg,image/webp" %>
+            <div class="form-text">PNG, JPG, or WebP up to 5MB.</div>
           </div>
 
           <div class="d-grid">

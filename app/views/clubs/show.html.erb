@@ -1,45 +1,43 @@
 <section class="container my-4">
   <div class="position-relative mb-2">
-    <div class="d-flex flex-row flex-wrap width-full gap-2" style="justify-content: space-between; align-items: center;">
-        
-        
-        <h1 class="display-4 mb-3 border-bottom pb-4 fw-bold width-100 text-northwestern-purple">
-        <%= @club.name %>
+    <div class="d-flex flex-wrap align-items-start gap-4 mb-3">
+      <%= club_avatar(@club, size: :xl) %>
+      <div class="flex-grow-1">
+        <h1 class="display-4 mb-3 border-bottom pb-3 fw-bold text-northwestern-purple">
+          <%= @club.name %>
         </h1>
-
-
-
-        <% if current_user && !current_user&.member_of?(@club) %>
-            <div class="position-relative top-0 end-0 d-flex flex-row gap-2 mb-4" style="">
-                <%= button_to club_membership_path(@club), method: :post, class: "btn btn-northwestern-purple me-2" do %>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <div class="d-flex gap-2">
+            <% if current_user && !current_user&.member_of?(@club) %>
+              <%= button_to club_membership_path(@club), method: :post, class: "btn btn-northwestern-purple" do %>
                 <i class="bi bi-person-plus-fill"></i> Join Club
-                <% end %>
-            </div>
-
-        <% end %>
-
-        <% if current_user&.member_of?(@club) %>
-            <%= button_to club_membership_path(@club), method: :delete, class: "btn btn-outline-secondary" do %>
-                <i class="bi bi-person-dash-fill"></i> Leave Club
+              <% end %>
             <% end %>
-        <% end %>
 
+            <% if current_user&.owns?(@club) %>
+              <%= link_to edit_club_path(@club), class: "btn btn-outline-warning" do %>
+                <i class="bi bi-pencil-square"></i> Edit Club
+              <% end %>
+              <%= button_to @club, method: :delete,
+                  data: { confirm: "Are you sure you want to delete this club and all of its events?" },
+                  class: "btn btn-outline-danger" do %>
+                <i class="bi bi-trash"></i> Delete Club
+              <% end %>
+            <% end %>
+          </div>
+
+          <% if current_user&.member_of?(@club) %>
+            <div class="ms-auto">
+              <%= button_to club_membership_path(@club), method: :delete, class: "btn btn-outline-secondary" do %>
+                <i class="bi bi-person-dash-fill"></i> Leave Club
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
 
-    <% if current_user&.owns?(@club) %>
-        <div class="position-relative top-0 end-0 d-flex flex-row gap-2 mb-4" style="">
-            <%= link_to edit_club_path(@club), class: "btn btn-outline-warning me-2" do %>
-            <i class="bi bi-pencil-square"></i> Edit Club
-            <% end %>
-            <%= button_to @club, method: :delete, 
-                data: { confirm: "Are you sure you want to delete this club and all of its events?" }, 
-                class: "btn btn-outline-danger d-inline-block" do %>
-            <i class="bi bi-trash"></i> Delete Club
-            <% end %>
-        </div>
-    <% end %>
-
-    <p class="lead text-muted"><%= @club.description %></p>
+    <p class="lead text-muted"><%= @club.description.present? ? @club.description : "This club hasn't added a description yet." %></p>
   </div>
 
   <section class="card shadow-sm mb-4">
