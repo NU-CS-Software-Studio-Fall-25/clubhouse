@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :member_clubs, through: :memberships, source: :club
   has_many :chat_messages, dependent: :destroy
+  has_one_attached :avatar
 
 
   def self.from_omniauth(auth)
