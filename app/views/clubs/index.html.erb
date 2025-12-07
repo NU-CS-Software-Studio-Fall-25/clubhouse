@@ -32,6 +32,17 @@
               <i class="bi bi-person-heart me-2"></i>My Clubs
             <% end %>
           </li>
+          <li class="nav-item" role="presentation">
+            <%= link_to clubs_path(tab: 'pending_requests'), 
+                class: "nav-link #{'active' if @active_tab == 'pending_requests'}", 
+                data: { turbo_frame: "_top" } do %>
+              <i class="bi bi-hourglass-split me-2"></i>Pending Requests
+              <% pending_count = current_user.memberships.pending.count %>
+              <% if pending_count > 0 %>
+                <span class="badge bg-warning text-dark ms-1"><%= pending_count %></span>
+              <% end %>
+            <% end %>
+          </li>
         <% end %>
         <li class="nav-item" role="presentation">
           <%= link_to clubs_path(tab: 'discover'), 
@@ -104,6 +115,20 @@
                       <i class="bi bi-plus-circle me-2"></i>Create a Club
                     <% end %>
                   </div>
+                <% end %>
+              <% elsif @active_tab == 'pending_requests' %>
+                <% if @query.present? %>
+                  <i class="bi bi-search display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">No pending requests matching "<%= @query %>"</h3>
+                  <p class="text-muted mb-4">Try a different search term or view all your pending requests.</p>
+                  <%= link_to "Clear Search", clubs_path(tab: 'pending_requests'), class: "btn btn-northwestern-purple btn-lg shadow-sm" %>
+                <% else %>
+                  <i class="bi bi-hourglass-split display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">No Pending Requests</h3>
+                  <p class="text-muted mb-4">You don't have any pending club membership requests.</p>
+                  <%= link_to clubs_path(tab: 'discover'), class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                    <i class="bi bi-compass me-2"></i>Discover Clubs
+                  <% end %>
                 <% end %>
               <% else %>
                 <% if @query.present? %>

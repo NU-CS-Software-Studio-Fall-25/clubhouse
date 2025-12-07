@@ -9,10 +9,17 @@
 
 
 
-        <% if current_user && !current_user&.member_of?(@club) %>
+        <% if current_user && !current_user&.member_of?(@club) && !current_user&.owns?(@club) %>
             <div class="position-relative top-0 end-0 d-flex flex-row gap-2 mb-4" style="">
-                <%= button_to club_membership_path(@club), method: :post, class: "btn btn-northwestern-purple me-2" do %>
-                <i class="bi bi-person-plus-fill"></i> Join Club
+                <% if current_user.pending_request_for?(@club) %>
+                    <%= button_to club_membership_path(@club), method: :delete, class: "btn btn-outline-secondary me-2" do %>
+                    <i class="bi bi-hourglass-split"></i> Cancel Request
+                    <% end %>
+                    <span class="badge bg-warning text-dark align-self-center">Request Pending</span>
+                <% else %>
+                    <%= button_to club_membership_path(@club), method: :post, class: "btn btn-northwestern-purple me-2" do %>
+                    <i class="bi bi-person-plus-fill"></i> Request to Join
+                    <% end %>
                 <% end %>
             </div>
 
@@ -28,6 +35,12 @@
 
     <% if current_user&.owns?(@club) %>
         <div class="position-relative top-0 end-0 d-flex flex-row gap-2 mb-4" style="">
+            <%= link_to pending_requests_club_path(@club), class: "btn btn-outline-info me-2" do %>
+            <i class="bi bi-person-check"></i> Pending Requests
+            <% if @club.pending_memberships.any? %>
+                <span class="badge bg-danger"><%= @club.pending_memberships.count %></span>
+            <% end %>
+            <% end %>
             <%= link_to edit_club_path(@club), class: "btn btn-outline-warning me-2" do %>
             <i class="bi bi-pencil-square"></i> Edit Club
             <% end %>
