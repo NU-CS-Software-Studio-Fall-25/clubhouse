@@ -25,6 +25,9 @@ gem "bcrypt", "~> 3.1.7"
 # Profanity filtering
 gem "language_filter"
 
+# Calendar file generation
+gem "icalendar"
+
 gem "omniauth"
 gem "omniauth-rails_csrf_protection"   # REQUIRED for Rails 7+
 gem "omniauth-google-oauth2"
@@ -72,7 +75,6 @@ group :development, :test do
   gem "database_cleaner-active_record"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
-  gem "icalendar"
 end
 
 group :development do
