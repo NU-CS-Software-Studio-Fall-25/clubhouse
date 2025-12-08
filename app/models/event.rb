@@ -85,8 +85,9 @@ class Event < ApplicationRecord
   end
 
   validates :name, presence: true
+  validates :name, length: { maximum: 50 }
   validates :date, presence: true
-  validates :description, length: { maximum: 750, message: "must not exceed 750 characters" }
+  validates :description, length: { maximum: 300, message: "must not exceed 300 characters" }
   validate :recurring_end_after_start, if: -> { recurring == "1" && end_date.present? }
   
   # Profanity filters

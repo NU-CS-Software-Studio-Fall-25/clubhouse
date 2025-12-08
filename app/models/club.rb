@@ -9,6 +9,8 @@ class Club < ApplicationRecord
     has_one_attached :profile_photo
 
     validates :name, presence: true
+    validates :name, length: { maximum: 50 }
+    validates :description, length: { maximum: 300 }, allow_blank: true
     
     # Profanity filters
     validates :name, profanity: { message: "contains inappropriate language" }
