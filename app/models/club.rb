@@ -9,4 +9,8 @@ class Club < ApplicationRecord
     has_one_attached :profile_photo
 
     validates :name, presence: true
+    
+    # Profanity filters
+    validates :name, profanity: { message: "contains inappropriate language" }
+    validates :description, profanity: { message: "contains inappropriate language" }, if: -> { description.present? }
 end

@@ -88,6 +88,11 @@ class Event < ApplicationRecord
   validates :date, presence: true
   validates :description, length: { maximum: 750, message: "must not exceed 750 characters" }
   validate :recurring_end_after_start, if: -> { recurring == "1" && end_date.present? }
+  
+  # Profanity filters
+  validates :name, profanity: { message: "contains inappropriate language" }
+  validates :description, profanity: { message: "contains inappropriate language" }, if: -> { description.present? }
+  validates :location, profanity: { message: "contains inappropriate language" }, if: -> { location.present? }
 
   def event_params
     params.require(:event).permit(:name, :date, :location, :description, :club_id, :recurring, :end_date)

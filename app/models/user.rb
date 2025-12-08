@@ -19,6 +19,11 @@ class User < ApplicationRecord
               less_than_or_equal_to: 2100
             },
             allow_nil: true
+  
+  # Profanity filters
+  validates :name, profanity: { message: "contains inappropriate language" }, if: -> { name.present? }
+  validates :description, profanity: { message: "contains inappropriate language" }, if: -> { description.present? }
+  validates :major, profanity: { message: "contains inappropriate language" }, if: -> { major.present? }
 
   has_many :clubs, dependent: :nullify # clubs they created
   has_many :memberships, dependent: :destroy
