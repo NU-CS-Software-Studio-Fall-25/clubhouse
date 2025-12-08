@@ -103,7 +103,7 @@
     <div class="card-body">
       <% if @can_chat %>
         <div class="mb-4">
-          <% if @chat_messages.any? %>
+              <% if @chat_messages.any? %>
             <div class="list-group list-group-flush chat-thread" style="max-height: 40dvh; overflow-y: auto;">
               <% @chat_messages.each do |message| %>
                 <div class="list-group-item border-start-0 border-end-0">
@@ -119,6 +119,15 @@
                           <% end %>
                         </small>
                       </div>
+                      <% if message.reply_to_id.present? %>
+                        <% parent = @chat_messages.find { |m| m.id == message.reply_to_id } %>
+                        <% if parent %>
+                          <div class="mt-2 mb-2 p-2 border rounded bg-light">
+                            <small class="text-muted">Replying to <strong><%= parent.user.name %></strong>: <%= truncate(strip_tags(parent.content), length: 120) %></small>
+                          </div>
+                        <% end %>
+                      <% end %>
+
                       <div class="mt-2 chat-message-content"><%= simple_format(message.content) %></div>
                     </div>
                     <% if current_user && message.user == current_user %>
@@ -133,6 +142,13 @@
                           <i class="bi bi-trash"></i>
                         <% end %>
                       </div>
+                    <% else %>
+                      <%# Allow replying when user can chat %>
+                      <% if @can_chat %>
+                        <div class="d-flex gap-2 ms-3">
+                          <%= link_to "Reply", club_path(@club, reply_to: message.id, anchor: "club-chat"), class: "btn btn-sm btn-outline-secondary" %>
+                        </div>
+                      <% end %>
                     <% end %>
                   </div>
                 </div>
@@ -142,6 +158,21 @@
             <p class="text-muted mb-0">No messages yet. Start the conversation!</p>
           <% end %>
         </div>
+
+        <%# Reply preview: show when ?reply_to=ID is present or form has reply_to_id set %>
+        <% reply_to_param = params[:reply_to].presence || @new_chat_message&.reply_to_id %>
+        <% if reply_to_param.present? %>
+          <% parent = @chat_messages.find { |m| m.id == reply_to_param.to_i } %>
+          <% if parent %>
+            <div class="mb-3 p-3 border rounded bg-light">
+              <small class="text-muted">Replying to <strong><%= parent.user.name %></strong></small>
+              <div class="mt-2"><%= truncate(strip_tags(parent.content), length: 180) %></div>
+              <div class="mt-2">
+                <%= link_to "Cancel reply", club_path(@club, anchor: "club-chat"), class: "btn btn-sm btn-link" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
 
         <%= form_with model: [@club, @new_chat_message], local: true do |form| %>
           <% if @new_chat_message.errors.any? %>
@@ -157,6 +188,8 @@
           <div class="mb-3">
             <%= form.text_area :content, class: "form-control", rows: 3, placeholder: "Share an update with the club..." %>
           </div>
+          <%# Hidden field for reply_to_id so the create action receives it %>
+          <%= form.hidden_field :reply_to_id, value: (params[:reply_to].presence || @new_chat_message&.reply_to_id) %>
           <%= form.submit "Send", class: "btn btn-northwestern-purple" %>
         <% end %>
       <% elsif user_signed_in? %>

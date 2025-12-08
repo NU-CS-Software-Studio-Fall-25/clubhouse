@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_07_011848) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_07_123000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -46,8 +46,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_07_011848) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "edited_at"
+    t.integer "reply_to_id"
     t.index ["club_id", "created_at"], name: "index_chat_messages_on_club_id_and_created_at"
     t.index ["club_id"], name: "index_chat_messages_on_club_id"
+    t.index ["reply_to_id"], name: "index_chat_messages_on_reply_to_id"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
 
@@ -104,6 +106,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_07_011848) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chat_messages", "chat_messages", column: "reply_to_id"
   add_foreign_key "chat_messages", "clubs"
   add_foreign_key "chat_messages", "users"
   add_foreign_key "clubs", "users"

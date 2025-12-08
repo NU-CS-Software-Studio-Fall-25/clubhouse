@@ -9,6 +9,11 @@ class ChatMessagesController < ApplicationController
     @chat_message = @club.chat_messages.build(chat_message_params)
     @chat_message.user = current_user
 
+    # If a reply_to param was passed (from query string), prefer it if present
+    if params[:reply_to].present? && @chat_message.reply_to_id.blank?
+      @chat_message.reply_to_id = params[:reply_to]
+    end
+
     if @chat_message.save
       redirect_to club_path(@club, anchor: "club-chat"), notice: "Message posted."
     else
@@ -50,7 +55,7 @@ class ChatMessagesController < ApplicationController
   end
 
   def chat_message_params
-    params.require(:chat_message).permit(:content)
+    params.require(:chat_message).permit(:content, :reply_to_id)
   end
 
   def load_related_resources
