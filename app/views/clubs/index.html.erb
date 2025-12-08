@@ -32,6 +32,16 @@
               <i class="bi bi-person-heart me-2"></i>My Clubs
             <% end %>
           </li>
+          <% if current_user.clubs.any? %>
+            <li class="nav-item" role="presentation">
+              <%= link_to clubs_path(tab: 'owned_clubs'), 
+                  class: "nav-link #{'active' if @active_tab == 'owned_clubs'}", 
+                  data: { turbo_frame: "_top" } do %>
+                <i class="bi bi-star-fill me-2"></i>Owned Clubs
+                <span class="badge bg-primary ms-1"><%= current_user.clubs.count %></span>
+              <% end %>
+            </li>
+          <% end %>
           <li class="nav-item" role="presentation">
             <%= link_to clubs_path(tab: 'pending_requests'), 
                 class: "nav-link #{'active' if @active_tab == 'pending_requests'}", 
@@ -115,6 +125,20 @@
                       <i class="bi bi-plus-circle me-2"></i>Create a Club
                     <% end %>
                   </div>
+                <% end %>
+              <% elsif @active_tab == 'owned_clubs' %>
+                <% if @query.present? %>
+                  <i class="bi bi-search display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">No owned clubs matching "<%= @query %>"</h3>
+                  <p class="text-muted mb-4">Try a different search term or view all your owned clubs.</p>
+                  <%= link_to "Clear Search", clubs_path(tab: 'owned_clubs'), class: "btn btn-northwestern-purple btn-lg shadow-sm" %>
+                <% else %>
+                  <i class="bi bi-star-fill display-1 text-northwestern-purple mb-4"></i>
+                  <h3 class="fw-bold mb-3">You don't own any clubs yet</h3>
+                  <p class="text-muted mb-4">Create your first club and start building a community!</p>
+                  <%= link_to new_club_path, class: "btn btn-northwestern-purple btn-lg shadow-sm" do %>
+                    <i class="bi bi-plus-circle me-2"></i>Create a Club
+                  <% end %>
                 <% end %>
               <% elsif @active_tab == 'pending_requests' %>
                 <% if @query.present? %>

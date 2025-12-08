@@ -11,17 +11,21 @@ class ClubsController < ApplicationController
     # First, filter by tab
     if user_signed_in?
       if @active_tab == "my_clubs"
-        # Show clubs where user is owner or member
+        # Show clubs where user is member (not owner)
         owned_club_ids = current_user.clubs.pluck(:id)
         member_club_ids = current_user.memberships.approved.pluck(:club_id)
-        all_club_ids = (owned_club_ids + member_club_ids).uniq
-        @clubs = Club.where(id: all_club_ids)
+        # Only show clubs where they're a member but not the owner
+        member_only_club_ids = member_club_ids - owned_club_ids
+        @clubs = Club.where(id: member_only_club_ids)
+      elsif @active_tab == "owned_clubs"
+        # Show clubs where user is the owner
+        @clubs = current_user.clubs
       elsif @active_tab == "pending_requests"
         # Show clubs where user has pending membership requests
         pending_club_ids = current_user.memberships.pending.pluck(:club_id)
         @clubs = Club.where(id: pending_club_ids)
       else
-        # Show clubs where user is NOT a member or owner and has no pending request
+        # Show clubs where user is NOT a member, owner, and has no pending request
         owned_club_ids = current_user.clubs.pluck(:id)
         member_club_ids = current_user.memberships.approved.pluck(:club_id)
         pending_club_ids = current_user.memberships.pending.pluck(:club_id)
