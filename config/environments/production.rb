@@ -22,7 +22,10 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :production
+  
+  # Purge attachments immediately instead of via background job (since SolidQueue isn't set up on Heroku yet)
+  config.active_storage.queues.purge = nil
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
