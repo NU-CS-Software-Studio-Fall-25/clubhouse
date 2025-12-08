@@ -5,9 +5,12 @@
         <div class="card-body">
           <%= form.hidden_field :club_id, value: event.club_id || params[:club_id] %>
 
-          <div class="mb-3">
+          <div class="mb-3" data-character-count="true" data-character-count-max="50">
             <%= form.label :name, class: "form-label" %>
-            <%= form.text_field :name, class: "form-control" %>
+            <%= form.text_field :name, class: "form-control", maxlength: 50, data: { "character-count-role": "input" } %>
+            <div class="form-text text-end">
+              <span data-character-count-role="counter"></span>
+            </div>
           </div>
 
           <div class="mb-3">
@@ -20,10 +23,13 @@
             <%= form.text_field :location, class: "form-control" %>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-3" data-character-count="true" data-character-count-max="300">
             <%= form.label :description, class: "form-label" %>
-            <%= form.text_area :description, class: "form-control", rows: 4, id: "event_description" %>
-            <div class="form-text">Optional: provide details about the event. <span id="char-count">0</span>/750 characters</div>
+            <%= form.text_area :description, class: "form-control", rows: 4, maxlength: 300, data: { "character-count-role": "input" } %>
+            <div class="d-flex justify-content-between form-text">
+              <span>Optional: provide details about the event.</span>
+              <span data-character-count-role="counter"></span>
+            </div>
           </div>
 
           <div class="mb-3">
@@ -40,16 +46,11 @@
           </div>
 
           <div class="d-grid">
-            <%= form.submit class: "btn btn-primary", id: "event_submit" %>
+            <%= form.submit class: "btn btn-primary" %>
           </div>
 
           <script>
             (() => {
-              const MAX_CHARS = 750;
-              const WARNING_CHARS = 700;
-              const descriptionField = document.getElementById('event_description');
-              const charCount = document.getElementById('char-count');
-              const submitBtn = document.getElementById('event_submit');
               const recurringCheckbox = document.getElementById('event_recurring');
               const endDateField = document.getElementById('event_end_date_field');
 
@@ -59,33 +60,11 @@
                 }
               };
 
-              const updateCharCount = () => {
-                const length = descriptionField.value.length;
-                charCount.textContent = length;
-
-                // Update outline color based on character count
-                if (length > MAX_CHARS) {
-                  descriptionField.style.borderColor = '#dc3545'; // red
-                  descriptionField.style.borderWidth = '2px';
-                  submitBtn.disabled = true;
-                } else if (length > WARNING_CHARS) {
-                  descriptionField.style.borderColor = '#ffc107'; // yellow
-                  descriptionField.style.borderWidth = '2px';
-                  submitBtn.disabled = false;
-                } else {
-                  descriptionField.style.borderColor = '';
-                  descriptionField.style.borderWidth = '';
-                  submitBtn.disabled = false;
-                }
-              };
-
               // Initial setup
               toggleEndDateField();
-              updateCharCount();
 
               // Add event listeners
               recurringCheckbox?.addEventListener('change', toggleEndDateField);
-              descriptionField?.addEventListener('input', updateCharCount);
             })();
           </script>
         </div>

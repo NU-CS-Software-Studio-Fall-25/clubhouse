@@ -14,14 +14,21 @@
             </div>
           <% end %>
 
-          <div class="mb-3">
+          <div class="mb-3" data-character-count="true" data-character-count-max="50">
             <%= form.label :name, class: "form-label" %>
-            <%= form.text_field :name, class: "form-control" %>
+            <%= form.text_field :name, class: "form-control", maxlength: 50, data: { "character-count-role": "input" } %>
+            <div class="form-text text-end">
+              <span data-character-count-role="counter"></span>
+            </div>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-3" data-character-count="true" data-character-count-max="300">
             <%= form.label :description, class: "form-label" %>
-            <%= form.text_area :description, class: "form-control", rows: 5 %>
+            <%= form.text_area :description, class: "form-control", rows: 5, maxlength: 300, data: { "character-count-role": "input" } %>
+            <div class="d-flex justify-content-between form-text">
+              <span>Help members understand what the club is about.</span>
+              <span data-character-count-role="counter"></span>
+            </div>
           </div>
 
           <div class="mb-4">
